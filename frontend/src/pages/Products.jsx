@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 
 export default function Products(){
 
+  const [defaultThreshold,setDefaultThreshold] = useState(5);
+
   const [products,setProducts] = useState([]);
   const [search,setSearch] = useState("");
 
@@ -13,9 +15,19 @@ export default function Products(){
     setProducts(res.data);
   }
 
-  useEffect(()=>{
-    fetchProducts();
-  },[]);
+  const fetchSettings = async () =>{
+  try{
+    const res = await API.get("/settings");
+    setDefaultThreshold(res.data.defaultLowStockThreshold);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+useEffect(()=>{
+  fetchProducts();
+  fetchSettings();
+},[]);
 
   const deleteProduct = async(id)=>{
     const confirmDelete = window.confirm("Delete this product?");
@@ -82,7 +94,7 @@ export default function Products(){
 
             {filteredProducts.map((p)=>{
 
-              const threshold = p.lowStockThreshold ?? 5;
+              const threshold = p.lowStockThreshold ?? defaultThreshold;
 
               const isLowStock = p.quantity <= threshold;
 

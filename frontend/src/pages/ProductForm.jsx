@@ -21,13 +21,20 @@ export default function ProductForm(){
     if(id){
       fetchProduct();
     }
-  },[]);
+  },[id]);
 
-  const fetchProduct = async ()=>{
-    const res = await API.get(`/products/${id}`);
-    setProduct(res.data);
-  }
+const fetchProduct = async ()=>{
+  const res = await API.get(`/products/${id}`);
 
+  setProduct({
+    name: res.data.name || "",
+    sku: res.data.sku || "",
+    quantity: res.data.quantity || 0,
+    costPrice: res.data.costPrice || "",
+    sellingPrice: res.data.sellingPrice || "",
+    lowStockThreshold: res.data.lowStockThreshold || ""
+  });
+}
   const handleChange = (e)=>{
     setProduct({
       ...product,
@@ -35,21 +42,27 @@ export default function ProductForm(){
     });
   }
 
-  const handleSubmit = async(e)=>{
-    e.preventDefault();
+const handleSubmit = async(e)=>{
+  e.preventDefault();
 
-    if(id){
+  const payload = {
+    ...product,
+    quantity: Number(product.quantity),
+    costPrice: Number(product.costPrice),
+    sellingPrice: Number(product.sellingPrice),
+    lowStockThreshold: product.lowStockThreshold
+      ? Number(product.lowStockThreshold)
+      : null
+  };
 
-      await API.put(`/products/${id}`,product);
-
-    }else{
-
-      await API.post("/products",product);
-
-    }
-
-    navigate("/products");
+  if(id){
+    await API.put(`/products/${id}`,payload);
+  }else{
+    await API.post("/products",payload);
   }
+
+  navigate("/products");
+}
 
   return(
 
@@ -65,72 +78,103 @@ export default function ProductForm(){
 
         </h1>
 
-        <form
-        onSubmit={handleSubmit}
-        className="space-y-4 max-w-md"
-        >
+<form
+onSubmit={handleSubmit}
+className="space-y-5 max-w-md bg-white p-6 shadow rounded"
+>
 
-          <input
-          name="name"
-          placeholder="Name"
-          className="border p-2 w-full"
-          value={product.name}
-          onChange={handleChange}
-          required
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Product Name
+    </label>
+    <input
+      name="name"
+      className="border p-2 w-full rounded"
+      value={product.name}
+      onChange={handleChange}
+      required
+    />
+  </div>
 
-          <input
-          name="sku"
-          placeholder="SKU"
-          className="border p-2 w-full"
-          value={product.sku}
-          onChange={handleChange}
-          required
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      SKU
+    </label>
+    <input
+      name="sku"
+      className="border p-2 w-full rounded"
+      value={product.sku}
+      onChange={handleChange}
+      required
+    />
+  </div>
 
-          <input
-          name="quantity"
-          type="number"
-          placeholder="Quantity"
-          className="border p-2 w-full"
-          value={product.quantity}
-          onChange={handleChange}
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Quantity
+    </label>
+    <input
+      name="quantity"
+      type="number"
+      min="0"
+      className="border p-2 w-full rounded"
+      value={product.quantity}
+      onChange={handleChange}
+    />
+  </div>
 
-          <input
-          name="costPrice"
-          type="number"
-          placeholder="Cost Price"
-          className="border p-2 w-full"
-          value={product.costPrice}
-          onChange={handleChange}
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Cost Price
+    </label>
+    <input
+      name="costPrice"
+      type="number"
+      min="0"
+      className="border p-2 w-full rounded"
+      value={product.costPrice}
+      onChange={handleChange}
+    />
+  </div>
 
-          <input
-          name="sellingPrice"
-          type="number"
-          placeholder="Selling Price"
-          className="border p-2 w-full"
-          value={product.sellingPrice}
-          onChange={handleChange}
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Selling Price
+    </label>
+    <input
+      name="sellingPrice"
+      type="number"
+      min="0"
+      className="border p-2 w-full rounded"
+      value={product.sellingPrice}
+      onChange={handleChange}
+    />
+  </div>
 
-          <input
-          name="lowStockThreshold"
-          type="number"
-          placeholder="Low Stock Threshold"
-          className="border p-2 w-full"
-          value={product.lowStockThreshold}
-          onChange={handleChange}
-          />
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Low Stock Threshold
+    </label>
+    <input
+      name="lowStockThreshold"
+      type="number"
+      min="0"
+      className="border p-2 w-full rounded"
+      value={product.lowStockThreshold}
+      onChange={handleChange}
+    />
+    <p className="text-xs text-gray-500 mt-1">
+      Leave empty to use organization default threshold
+    </p>
+  </div>
 
-          <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Save
-          </button>
+  <button
+    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full"
+  >
+    Save Product
+  </button>
 
-        </form>
+</form>
 
       </div>
 

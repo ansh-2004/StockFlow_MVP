@@ -77,7 +77,7 @@ export default function Dashboard(){
                   <td className="border p-2">{p.quantity}</td>
 
                   <td className="border p-2">
-                    {p.lowStockThreshold ?? "default"}
+                    {p.threshold}
                   </td>
 
                 </tr>

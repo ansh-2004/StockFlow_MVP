@@ -31,11 +31,28 @@ export const getDashboardData = async (req,res)=>{
             (sum,p) => sum + (p.quantity || 0),0
         )
 
-        const lowStockItems = products.filter((p)=>{
-            const threshold = p.lowStockThreshold ?? defaultThreshold
-            return p.quantity <= threshold
+        // const lowStockItems = products.filter((p)=>{
+        //     const threshold = p.lowStockThreshold ?? defaultThreshold
+        //     return p.quantity <= threshold
             
-        })
+        // })
+
+
+        const lowStockItems = products.map((p) => {
+                const threshold = p.lowStockThreshold ?? settings.defaultLowStockThreshold
+
+                if (p.quantity <= threshold) {
+                    return {
+                        name: p.name,
+                        sku: p.sku,
+                        quantity: p.quantity,
+                        threshold
+                    };
+                    }
+
+                    return null;
+                })
+                .filter(Boolean);        
 
 
         res.json({
