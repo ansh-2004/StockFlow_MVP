@@ -70,13 +70,15 @@ export default function Login(){
           </Link>
         </p>
 
+        <div className="text-sm text-gray-600 text-center mt-4">
+            <p>Demo Credentials</p>
+            <p>Email: ansh@gmail.com</p>
+            <p>Password: ansh</p>
+        </div>
+
       </form>
 
-      <div className="text-sm text-gray-600 text-center mt-4">
-        <p>Demo Credentials</p>
-        <p>Email: ansh@gmail.com</p>
-        <p>Password: ansh</p>
-        </div>
+   
 
       
 
