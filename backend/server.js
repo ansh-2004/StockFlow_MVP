@@ -10,7 +10,10 @@ import settingsRoutes from './routes/settingsRoutes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
-app.use(cors())
+app.use(cors({
+  origin: "https://stock-flow-mvp-rust.vercel.app",
+  credentials: true
+}))
 app.use(express.json())
 
 app.get('/',(req,res)=>{
