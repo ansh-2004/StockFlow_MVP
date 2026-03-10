@@ -2,16 +2,17 @@ import prisma from "../prisma/client.js";
 
 export const createProduct = async(req,res)=>{
     try {
-        const {name,sku,description,quantity,costPrice,sellingPrice} = req.body 
+        const {name,sku,description,quantity,costPrice,sellingPrice,lowStockThreshold} = req.body 
 
         const product = await prisma.product.create({
             data : {
                 name,
                 sku,
                 description,
-                quantity,
+                quantity : quantity || 0,
                 costPrice,
                 sellingPrice,
+                lowStockThreshold,
                 organizationId : req.user.organizationId
             }
         })
@@ -19,6 +20,7 @@ export const createProduct = async(req,res)=>{
 
         res.status(201).json(product)
     } catch (error) {
+        console.log(error)
         res.status(500).json({messsage: error.messsage})
     }
 }

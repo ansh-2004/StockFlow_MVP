@@ -4,37 +4,44 @@ export const getDashboardData = async (req,res)=>{
     try {
         const organizationId = req.user.organizationId 
 
-        const totalProducts = await prisma.product.count({
+        const settings = await prisma.settings.findUnique({
             where : {organizationId}
         })
 
-        const lowStockProducts = await prisma.product.count({
-            where : {
-                organizationId,
-                quantity : {
-                    lte : 5
-                }
-            }
+        const defaultThreshold = settings?.defaultLowStockThreshold || 5 
+
+
+        const totalProducts = await prisma.product.count({
+            where : {organizationId}
         })
 
         const products = await prisma.product.findMany({
             where : {organizationId},
             select : {
+                id: true,
+                name : true,
+                sku : true,
                 quantity : true ,
-                sellingPrice : true 
+                lowStockThreshold : true 
             }
         })
 
-        let totalStockValue = 0 
 
-        products.forEach((p)=>{
-            totalStockValue += (p.quantity || 0) * (p.sellingPrice || 0)
+        const totalQuantity = products.reduce(
+            (sum,p) => sum + (p.quantity || 0),0
+        )
+
+        const lowStockItems = products.filter((p)=>{
+            const threshold = p.lowStockThreshold ?? defaultThreshold
+            return p.quantity <= threshold
+            
         })
+
 
         res.json({
             totalProducts,
-            lowStockProducts,
-            totalStockValue
+            totalQuantity,
+            lowStockItems
         })
     } catch (error) {
 
