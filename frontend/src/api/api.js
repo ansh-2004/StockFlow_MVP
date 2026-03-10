@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const API = axios.create({
-    baseURL: "http://localhost:3000"
+    // baseURL: "http://localhost:3000"
+    baseURL: "https://stockflow-mvp-d0tj.onrender.com"
 })
 
 API.interceptors.request.use((req)=>{
