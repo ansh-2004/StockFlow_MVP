@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import API from "../api/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 export default function Signup(){
     const navigate = useNavigate()
@@ -84,6 +84,17 @@ export default function Signup(){
         <button className="w-full bg-blue-600 text-white p-2 rounded">
           Signup
         </button>
+
+        
+        <p className="text-sm text-center text-gray-600">
+         Already have an account?{" "}
+          <Link
+            to="/Login"
+            className="text-blue-600 hover:underline font-medium"
+          >
+            Login
+          </Link>
+        </p>
 
       </form>
 
